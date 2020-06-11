@@ -1,4 +1,6 @@
 import React from 'react'
+import styleHoc from './styleHoc'
+import authHoc from './authHoc'
 
 const Square = props => {
   return (

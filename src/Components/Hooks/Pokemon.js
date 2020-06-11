@@ -3,19 +3,28 @@ import axios from 'axios'
 
 const Pokemon = (props) => {
   const [pokemon, setPokemon] = useState([])
-  const [reqUrl, setReqUrl] = useState('https://pokeapi.co/api/v2/pokemon')
-  const [page, setPage] = useState(0)
+  const [urls, setUrls] = useState({
+    prev: '',
+    next: 'https://pokeapi.co/api/v2/pokemon',
+  })
+  const [reqUrl, setReqUrl] = useState(urls.next)
+
   useEffect(() => {
     axios.get(reqUrl).then((res) => {
-      setReqUrl(res.data.next)
+      setUrls({ prev: res.data.previous, next: res.data.next })
       setPokemon(res.data.results)
     })
-  }, [page])
+  }, [reqUrl])
+
+  const handlePageChange = (target) => {
+    setReqUrl(target === 'next' ? urls.next : urls.prev)
+  }
 
   return (
     <div>
       {JSON.stringify(pokemon)}
-      <button onClick={() => setPage(page + 1)}>Next</button>
+      <button onClick={() => handlePageChange('prev')}>Previous</button>
+      <button onClick={() => handlePageChange('next')}>Next</button>
     </div>
   )
 }
